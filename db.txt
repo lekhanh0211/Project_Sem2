@@ -26,7 +26,7 @@ Create table tblTables
 	id int primary key identity,
 	name nvarchar(200) NOT NULL,
 	note nvarchar(200),
-	status bit
+	status tinyint
 )
 GO
 Create table tblBills

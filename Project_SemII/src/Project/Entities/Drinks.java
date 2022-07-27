@@ -5,6 +5,7 @@
  */
 package Project.Entities;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -16,18 +17,20 @@ public class Drinks {
     private int id;
     private String name;
     private float price;
-    private Date importDate;
-    private Date expiry;
+    private String description;
+    private Date expireDate;
+    private Boolean status;
 
     public Drinks() {
     }
 
-    public Drinks(int id, String name, float price, Date importDate, Date expiry) {
+    public Drinks(int id, String name, float price, String description, Date expireDate, Boolean status) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.importDate = importDate;
-        this.expiry = expiry;
+        this.description = description;
+        this.expireDate = expireDate;
+        this.status = status;
     }
 
     public Drinks(int i, String _Chọn_đồ_uống_) {
@@ -58,25 +61,29 @@ public class Drinks {
         this.price = price;
     }
 
-    public Date getImportDate() {
-        return importDate;
+    public String getDescription() {
+        return description;
     }
 
-    public void setImportDate(Date importDate) {
-        this.importDate = importDate;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public Date getExpiry() {
-        return expiry;
+    public String getExpireDate() {
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        return df.format(expireDate);
     }
 
-    public void setExpiry(Date expiry) {
-        this.expiry = expiry;
+    public void setExpireDate(Date expireDate) {
+        this.expireDate = expireDate;
     }
 
-    @Override
-    public String toString() {
-        return super.toString(); //To change body of generated methods, choose Tools | Templates.
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 
 }

@@ -41,12 +41,20 @@ public class DrinksDAO {
             PreparedStatement pstmt = con.prepareStatement("SELECT * FROM tblDrinks");
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                Drinks drinks = new Drinks(rs.getInt(1), rs.getString(2), rs.getFloat(3), rs.getDate(4), rs.getDate(5));
+                Drinks drinks = new Drinks(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getFloat(3),
+                        rs.getString(4),
+                        rs.getDate(5),
+                        rs.getBoolean(6)
+                );
                 list.add(drinks);
             }
+            return list;
         } catch (SQLException ex) {
             Logger.getLogger(DrinksDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return list;
+        return null;
     }
 }

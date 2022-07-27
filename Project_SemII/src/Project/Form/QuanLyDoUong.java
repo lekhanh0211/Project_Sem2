@@ -42,8 +42,10 @@ public class QuanLyDoUong extends javax.swing.JFrame {
         tableModel.addColumn("STT");
         tableModel.addColumn("Tên đồ uống");
         tableModel.addColumn("Giá");
-        tableModel.addColumn("Ngày sản xuất");
-        tableModel.addColumn("Ngày kết thúc");
+        tableModel.addColumn("Mô tả");
+        tableModel.addColumn("Hạn dùng");
+        tableModel.addColumn("Tình trạng");
+
         tblDisplay.setModel(tableModel);
         displayTable();
     }
@@ -53,7 +55,13 @@ public class QuanLyDoUong extends javax.swing.JFrame {
         List<Drinks> list = DrinksDAO.getInstance().GetListDrink();
         for (int i = 0; i < list.size(); i++) {
             Drinks drinks = list.get(i);
-            Object[] dt = {i + 1, drinks.getName(), drinks.getPrice(), drinks.getImportDate(), drinks.getExpiry()};
+            Object[] dt = {drinks.getId(),
+                drinks.getName(),
+                drinks.getPrice(),
+                drinks.getDescription(),
+                drinks.getExpireDate(),
+                drinks.getStatus() ? "Còn" : "Hết"
+            };
             tableModel.addRow(dt);
         }
     }
@@ -68,6 +76,7 @@ public class QuanLyDoUong extends javax.swing.JFrame {
     private void initComponents() {
 
         jFrame1 = new javax.swing.JFrame();
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
         btnHome = new javax.swing.JButton();
         btnAddDrink = new javax.swing.JButton();
@@ -81,10 +90,13 @@ public class QuanLyDoUong extends javax.swing.JFrame {
         btnUpdate = new javax.swing.JButton();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         jLabel4 = new javax.swing.JLabel();
-        txtdateStart = new javax.swing.JTextField();
+        txtdesc = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        txtdateEnd = new javax.swing.JTextField();
+        txtexpire = new javax.swing.JTextField();
         btnrefresh = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        rbCon = new javax.swing.JRadioButton();
+        rbhet = new javax.swing.JRadioButton();
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
         jFrame1.getContentPane().setLayout(jFrame1Layout);
@@ -172,14 +184,14 @@ public class QuanLyDoUong extends javax.swing.JFrame {
         });
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel4.setText("Ngày khuyến mãi");
+        jLabel4.setText("Mô tả:");
 
-        txtdateStart.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtdesc.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel5.setText("Ngày hết k.m");
+        jLabel5.setText("Ngày hết hạn:");
 
-        txtdateEnd.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtexpire.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         btnrefresh.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnrefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/reset_24px.png"))); // NOI18N
@@ -189,6 +201,16 @@ public class QuanLyDoUong extends javax.swing.JFrame {
                 btnrefreshActionPerformed(evt);
             }
         });
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel6.setText("Trạng thái:");
+
+        buttonGroup1.add(rbCon);
+        rbCon.setSelected(true);
+        rbCon.setText("Còn");
+
+        buttonGroup1.add(rbhet);
+        rbhet.setText("Hết");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -215,15 +237,20 @@ public class QuanLyDoUong extends javax.swing.JFrame {
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txtDrinkName, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(txtPrice)
-                                        .addComponent(txtdateStart)
-                                        .addComponent(txtdateEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addComponent(txtdesc)
+                                        .addComponent(txtexpire, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(rbCon)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(rbhet)))))
                         .addGap(20, 20, 20))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
@@ -252,12 +279,17 @@ public class QuanLyDoUong extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtdateStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtdesc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(txtdateEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
+                    .addComponent(txtexpire, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(rbCon)
+                    .addComponent(rbhet))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnAddDrink, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -288,7 +320,7 @@ public class QuanLyDoUong extends javax.swing.JFrame {
             stmt = con.createStatement();
             int i = stmt.executeUpdate("INSERT INTO tblDrinks VALUES "
                     + "('" + txtDrinkName.getText() + "'," + Integer.parseInt(txtPrice.getText()) + ",'"
-                    + txtdateStart.getText() + "','" + txtdateEnd.getText() + "')");
+                    + txtdesc.getText() + "','" + txtexpire.getText() + "')");
             if (i > 0) {
                 displayTable();
                 JOptionPane.showMessageDialog(null, "Thêm mới thành công!!");
@@ -318,8 +350,8 @@ public class QuanLyDoUong extends javax.swing.JFrame {
                         idSave = -1;
                         txtDrinkName.setText("");
                         txtPrice.setText("");
-                        txtdateStart.setText("");
-                        txtdateEnd.setText("");
+                        txtdesc.setText("");
+                        txtexpire.setText("");
                         JOptionPane.showMessageDialog(null, "Xóa thành công!!");
                     }
                 } else {
@@ -336,15 +368,35 @@ public class QuanLyDoUong extends javax.swing.JFrame {
     private void tblDisplayMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDisplayMouseClicked
 
         // TODO add your handling code here:
+//        int row = tblDisplay.getSelectedRow();
+//        Connection con;
+//        con = DbUtility.openConnection();
+//        List<Drinks> list = DrinksDAO.getInstance().GetListDrink();
+//        idSave = list.get(row).getId();
+//        txtDrinkName.setText(tblDisplay.getValueAt(row, 1) + "");
+//        txtPrice.setText(tblDisplay.getValueAt(row, 2) + "");
+//        txtdesc.setText(tblDisplay.getValueAt(row, 3) + "");
+//        txtexpire.setText(tblDisplay.getValueAt(row, 4) + "");
         int row = tblDisplay.getSelectedRow();
-        Connection con;
-        con = DbUtility.openConnection();
-        List<Drinks> list = DrinksDAO.getInstance().GetListDrink();
-        idSave = list.get(row).getId();
-        txtDrinkName.setText(tblDisplay.getValueAt(row, 1) + "");
-        txtPrice.setText(tblDisplay.getValueAt(row, 2) + "");
-        txtdateStart.setText(tblDisplay.getValueAt(row, 3) + "");
-        txtdateEnd.setText(tblDisplay.getValueAt(row, 4) + "");
+        String id = tblDisplay.getValueAt(row, 0).toString();
+        String name = tblDisplay.getValueAt(row, 1).toString();
+        String price = tblDisplay.getValueAt(row, 2).toString();
+        String description = tblDisplay.getValueAt(row, 3).toString();
+        String expireDate = tblDisplay.getValueAt(row, 4).toString();
+        String status = tblDisplay.getValueAt(row, 5).toString();
+
+        txtDrinkName.setText(name);
+        txtPrice.setText(price);
+        txtdesc.setText(description);
+        txtexpire.setText(expireDate);
+
+        if (status.equalsIgnoreCase("Còn")) {
+            rbCon.setSelected(true);
+            rbhet.setSelected(false);
+        } else {
+            rbCon.setSelected(false);
+            rbhet.setSelected(true);
+        }
     }//GEN-LAST:event_tblDisplayMouseClicked
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
@@ -356,8 +408,8 @@ public class QuanLyDoUong extends javax.swing.JFrame {
                 PreparedStatement pstmt = con.prepareStatement("update tblDrinks set name=?, price=?, importDate=?, expiry=? where id=?");
                 pstmt.setString(1, txtDrinkName.getText());
                 pstmt.setString(2, txtPrice.getText());
-                pstmt.setString(3, txtdateStart.getText());
-                pstmt.setString(4, txtdateEnd.getText());
+                pstmt.setString(3, txtdesc.getText());
+                pstmt.setString(4, txtexpire.getText());
                 pstmt.setInt(5, idSave);
                 int i = pstmt.executeUpdate();
                 if (i > 0) {
@@ -379,8 +431,8 @@ public class QuanLyDoUong extends javax.swing.JFrame {
         tableModel.setRowCount(0);
         txtDrinkName.setText("");
         txtPrice.setText("");
-        txtdateEnd.setText("");
-        txtdateStart.setText("");
+        txtexpire.setText("");
+        txtdesc.setText("");
 
         displayTable();
 
@@ -391,40 +443,10 @@ public class QuanLyDoUong extends javax.swing.JFrame {
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(QuanLyDoUong.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(QuanLyDoUong.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(QuanLyDoUong.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(QuanLyDoUong.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new QuanLyDoUong().setVisible(true);
-
             }
         });
     }
@@ -435,6 +457,7 @@ public class QuanLyDoUong extends javax.swing.JFrame {
     private javax.swing.JButton btnHome;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JButton btnrefresh;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.Box.Filler filler1;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JLabel jLabel1;
@@ -442,12 +465,15 @@ public class QuanLyDoUong extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JRadioButton rbCon;
+    private javax.swing.JRadioButton rbhet;
     private javax.swing.JTable tblDisplay;
     private javax.swing.JTextField txtDrinkName;
     private javax.swing.JTextField txtPrice;
-    private javax.swing.JTextField txtdateEnd;
-    private javax.swing.JTextField txtdateStart;
+    private javax.swing.JTextField txtdesc;
+    private javax.swing.JTextField txtexpire;
     // End of variables declaration//GEN-END:variables
 
 }

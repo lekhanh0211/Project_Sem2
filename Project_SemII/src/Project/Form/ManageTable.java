@@ -5,7 +5,6 @@
  */
 package Project.Form;
 
-import Project.DAO.AccountDAO;
 import Project.DAO.TablesDAO;
 import Project.Entities.Tables;
 import ProjectDb.DbUtility;
@@ -17,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -28,36 +28,43 @@ public class ManageTable extends javax.swing.JFrame {
     /**
      * Creates new form QuanLyBan
      */
-    private TablesDAO dao;
-    DefaultTableModel tableModel;
+    DefaultTableModel df;
     int idSave = -1;
 
     public ManageTable() {
         initComponents();
-        tableModel = new DefaultTableModel() {
+
+        df = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; //To change body of generated methods, choose Tools | Templates.
             }
 
         };
-        tableModel.addColumn("STT");
-        tableModel.addColumn("Số bàn");
-        tableModel.addColumn("Ghi chú");
-        tableModel.addColumn("Trạng thái");
-        tblDisplay.setModel(tableModel);
+        df.addColumn("STT");
+        df.addColumn("Số bàn");
+        df.addColumn("Ghi chú");
+        df.addColumn("Trạng thái");
+        tblDisplay.setModel(df);
         displayTable();
     }
 
     private void displayTable() {
-        tableModel.setRowCount(0);
-        List<Tables> listTable = TablesDAO.getInstance().LoadListTables();
-
-        for (int i = 0; i < listTable.size(); i++) {
-            Tables tables = listTable.get(i);
-            Object[] dt = {i + 1, tables.getName(), tables.getNote(), tables.getStatus() ? "Còn trống" : "Đã có khách"};
-            tableModel.addRow(dt);
+        df.setRowCount(0);
+        TablesDAO tablesDAO = new TablesDAO();
+        List<Tables> list = tablesDAO.LoadListTables();
+        for (int i = 0; i < list.size(); i++) {
+            Tables tables = list.get(i);
+            Object[] dt = {tables.getId(), tables.getName(), tables.getNote(), tables.getStatus()};
+            df.addRow(dt);
         }
+    }
+
+    private void resetForm() {
+        txtmessage.setText("");
+        txtNoteTable.setText("");
+        txtTableNumber.setText("");
+        rbCoKhach.setSelected(true);
     }
 
     /**
@@ -316,11 +323,9 @@ public class ManageTable extends javax.swing.JFrame {
                     pstmt.setInt(1, idSave);
                     int i = pstmt.executeUpdate();
                     if (i > 0) {
+                        JOptionPane.showMessageDialog(this, "Xóa thành công");
                         displayTable();
-                        idSave = -1;
-                        txtTableNumber.setText("");
-                        txtNoteTable.setText("");
-                        txtmessage.setText("");
+                        resetForm();
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Xóa thất bại!!");
@@ -336,18 +341,30 @@ public class ManageTable extends javax.swing.JFrame {
     private void tblDisplayMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDisplayMouseClicked
 
         // TODO add your handling code here:
+//        int row = tblDisplay.getSelectedRow();
+//        List<Tables> listTable = TablesDAO.getInstance().LoadListTables();
+//        idSave = listTable.get(row).getId();
+//        String name = txtTableNumber.setText(tblDisplay.getValueAt(row, 1) + "");
+//        String note = txtNoteTable.setText(tblDisplay.getValueAt(row, 2) + "");
+//        int row = tblDisplay.getSelectedRow();
+//        String id = tblDisplay.getValueAt(row, 0).toString();
         int row = tblDisplay.getSelectedRow();
-        List<Tables> listTable = TablesDAO.getInstance().LoadListTables();
+        TablesDAO dao = new TablesDAO();
+        List<Tables> listTable = dao.LoadListTables();
         idSave = listTable.get(row).getId();
-        txtTableNumber.setText(tblDisplay.getValueAt(row, 1) + "");
-        txtNoteTable.setText(tblDisplay.getValueAt(row, 2) + "");
-//        String sta = "Còn trống";
-//        if (rbCokhach.isSelected()) {
-//            sta = "Đã có khách";
-//        }
-//        if (rbTrong.isSelected()) {
-//            sta = "Còn trống";
-//        }
+        String name = tblDisplay.getValueAt(row, 1).toString();
+        String note = tblDisplay.getValueAt(row, 2).toString();
+        String status = tblDisplay.getValueAt(row, 3).toString();
+
+        txtTableNumber.setText(name);
+        txtNoteTable.setText(note);
+        if (status.equalsIgnoreCase("Đã có khách")) {
+            rbCoKhach.setSelected(true);
+            rbTrong.setSelected(false);
+        } else {
+            rbCoKhach.setSelected(false);
+            rbTrong.setSelected(true);
+        }
     }//GEN-LAST:event_tblDisplayMouseClicked
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
@@ -356,13 +373,13 @@ public class ManageTable extends javax.swing.JFrame {
         if (idSave >= 0) {
             Connection con;
             PreparedStatement pstmt;
-
             con = DbUtility.openConnection();
+
             try {
                 pstmt = con.prepareStatement("update tblTables set name=?, note=?,status=? where id=?");
                 pstmt.setString(1, txtTableNumber.getText());
                 pstmt.setString(2, txtNoteTable.getText());
-                pstmt.setBoolean(3, rbCoKhach.isSelected());
+                pstmt.setBoolean(3, rbCoKhach.setSelected());
                 pstmt.setInt(4, idSave);
 
                 int i = pstmt.executeUpdate();
@@ -378,16 +395,13 @@ public class ManageTable extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(null, "Bạn phải chọn bàn cần sửa!!");
         }
+//     
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnrefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnrefreshActionPerformed
         // TODO add your handling code here:
 
-        tableModel.setRowCount(0);
-        txtNoteTable.setText("");
-        txtTableNumber.setText("");
-
-        rbCoKhach.setSelected(true);
+        resetForm();
         displayTable();
     }//GEN-LAST:event_btnrefreshActionPerformed
 
@@ -400,22 +414,22 @@ public class ManageTable extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ManageTable.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ManageTable.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ManageTable.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ManageTable.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(ManageTable.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(ManageTable.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(ManageTable.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(ManageTable.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>

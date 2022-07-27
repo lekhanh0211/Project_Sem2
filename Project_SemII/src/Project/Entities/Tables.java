@@ -14,12 +14,12 @@ public class Tables {
     private int id;
     private String name;
     private String note;
-    private boolean status;
+    private int status;
 
     public Tables() {
     }
 
-    public Tables(int id, String name, String note, boolean status) {
+    public Tables(int id, String name, String note, int status) {
         this.id = id;
         this.name = name;
         this.note = note;
@@ -50,11 +50,17 @@ public class Tables {
         this.note = note;
     }
 
-    public boolean getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public Tables(String name, String note, int status) {
+        this.name = name;
+        this.note = note;
         this.status = status;
     }
 
