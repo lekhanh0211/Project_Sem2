@@ -1,0 +1,94 @@
+Create database Project_Sem2
+go
+use Project_Sem2
+go 
+Create table tblAccount
+(
+	id int primary key identity,
+	username varchar(200)  NOT NULL,
+	password varchar(250) NOT NULL,
+	name nvarchar(255) NOT NULL
+)
+GO
+
+Create table tblDrinks
+(
+	id int primary key identity,
+	name nvarchar(200) NOT NULL,
+	price float,
+	importDate datetime,
+	expiry datetime
+)
+GO
+
+Create table tblTables
+(
+	id int primary key identity,
+	name nvarchar(200) NOT NULL,
+	note nvarchar(200),
+	status bit
+)
+GO
+Create table tblBills
+(
+	id int primary key identity,
+	accountId int NOT NULL foreign key references tblAccount(id),
+	billDate datetime NOT NULL,
+	tablesId int NOT NULL foreign key references tblTables(id),
+	status bit,
+	totalPrice float NOT NULL
+)
+GO
+
+
+Create table tblOrders
+(
+	id int primary key identity,
+	drinksId int NOT NULL foreign key references tblDrinks(id),
+	quantity int NOT NULL,
+	billId int NOT NULL foreign key references tblBills(id)
+)
+GO
+
+INSERT INTO tblAccount VALUES
+( 'admin', 'admin', N'Admin'),
+( 'khanhld', '1234', N'Lê Duy Khánh'),
+( 'linhxinh', '1234', N'Đỗ Thị Mỹ Linh');
+Go
+
+INSERT INTO tblDrinks VALUES
+( N'Cà phê', 40000, '2018-01-01', '2018-12-12'),
+( N'Bạc xỉu', 30000, '2017-01-01', '2018-12-12'),
+( N'Cà phê đen', 20000, '2018-01-01', '2018-06-06'),
+( N'Cà phê đá', 40000, '2017-12-12', '2018-01-31');
+GO
+INSERT INTO tblTables  VALUES
+( N'Bàn 1', N'', 0),
+( N'Bàn 2', N'', 0),
+( N'Bàn 3', N'', 1),
+( N'Bàn 4', N'', 0),
+( N'Bàn 5', N'5 người', 0),
+( N'Bàn 6', N'9 người', 0)
+Go
+
+INSERT INTO tblBills VALUES
+( 1, '2018-01-05', 1, 1, 260000),
+( 2, '2018-01-05', 2, 1, 200000),
+( 1, '2018-01-05', 5, 1, 170000),
+( 2, '2018-01-05', 2, 1, 300000);
+GO
+
+
+INSERT INTO tblOrders  VALUES
+( 1, 1, 1),
+( 3, 1, 1),
+( 2, 1, 2),
+( 4, 2, 3),
+( 3, 1, 4),
+( 1, 5, 4),
+( 2, 1, 4),
+( 4, 1, 4);
+
+GO
+use master
+Drop database Project_Sem2
